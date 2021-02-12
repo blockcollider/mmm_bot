@@ -1,0 +1,105 @@
+{% extends 'template.html' %}
+{% block content %}
+<section class="page-header">
+  <br>
+  <h1>Orders</h1>
+  <br>
+</section>
+{% for currency, maker_taker_order_pairs in maker_taker_order_pairs_by_currency.items() %}
+  <div class="card">
+    <div class="card-header">
+      <a style="text-decoration:none" data-toggle="collapse" href="#collapse-order-{{currency | replace('/', '-')}}" aria-expanded="true" aria-controls="collapse-order-{{currency | replace('/', '-')}}" id="heading-example" class="d-block">
+        <i class="fa fa-chevron-down pull-right"></i>       Orders for {{ currency }}
+      </a>
+    </div>
+    <div id="collapse-order-{{currency | replace('/', '-')}}" class="collapse show" aria-labelledby="heading-example">
+      <div class="card-body table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th colspan="5" style="border-left: 2px solid #dee2e6; border-right: 2px solid #dee2e6;" >Maker Orders</th>
+              <th colspan="6" style="border-right: 2px solid #dee2e6;" >Taker Orders</th>
+            </tr>
+            <tr>
+              <th  style="border-left: 2px solid #dee2e6;" >CreatedAt</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Price</th>
+              <th style="border-right: 2px solid #dee2e6;" >Qty</th>
+
+              <th>CreatedAt</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Price</th>
+              <th>Qty</th>
+              <th  style="border-right: 2px solid #dee2e6;" >Exchange</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for maker_taker_order_pair in maker_taker_order_pairs %}
+            <tr id="maker-{{maker_taker_order_pair['maker']['id']}}" style="cursor:pointer" data-toggle="modal" data-target="#orderDetailModal" data-content='{{maker_taker_order_pair | tojson}}'>
+              <td  style="border-left: 2px solid #dee2e6;" >{{ maker_taker_order_pair['maker']['created_at'] }}</td>
+              <td>{{ maker_taker_order_pair['maker']['order_type'] }}</td>
+              <td>{{ maker_taker_order_pair['maker']['status'] }}</td>
+              <td>{{ maker_taker_order_pair['maker']['price'] }}</td>
+              <td style="border-right: 2px solid #dee2e6;">{{ maker_taker_order_pair['maker']['quantity'] }}</td>
+
+              {% if maker_taker_order_pair['taker'] is not none %}
+              <td>{{ maker_taker_order_pair['taker']['created_at'] }}</td>
+              <td>{{ maker_taker_order_pair['taker']['order_type'] }}</td>
+              <td>{{ maker_taker_order_pair['taker']['status'] }}</td>
+              <td>{{ maker_taker_order_pair['taker']['price'] }}</td>
+              <td>{{ maker_taker_order_pair['taker']['quantity'] }}</td>
+              <td  style="border-right: 2px solid #dee2e6;" >{{ maker_taker_order_pair['taker']['exchange'] }}</td>
+              {% else %}
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td  style="border-right: 2px solid #dee2e6;" ></td>
+
+              {%endif %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="orderDetailModal" tabindex="-1" role="dialog" aria-labelledby="orderDetailModal" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="orderDetailModalTitle">Order Detail</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre id='order-detail-display'>
+        </pre>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+    <script>
+      $(document).ready(function() {
+        $('.table > tbody > tr').on('click', function(e) {
+          var content = $(this).data().content;
+          console.log(content)
+          $('#order-detail-display').text(JSON.stringify(content, null, 2));
+        });
+      })
+    </script>
+{% endblock %}

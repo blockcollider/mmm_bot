@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "bc_market_maker"
+version = "0.1.0"
+description = ""
+authors = ["BC Devs <dev@blockcollider.org>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+alembic = "=1.3.0"
+arrow = "=0.15.2"
+pony = "=0.7.11"
+setproctitle = "=1.1.10"
+sqlalchemy = "=1.3.11"
+pyyaml = "^5.1"
+ipython = "=7.9.0"
+aiopubsub = "^2.1"
+python-binance = { git = "https://github.com/sammchardy/python-binance.git", branch = "feature/asyncio" }
+aiohttp = "^3.6" # only here because of python-binance from feature/asyncio branch does not declare deps correctly
+websockets = "^8.1" # only here because of python-binance from feature/asyncio branch does not declare deps correctly
+everett = "^1.0"
+databases = "^0.2.6"
+aiosqlite = "^0.11.0"
+typing_extensions = "^3.7"
+sanic = "19.12.0"
+jinja2 = "^2.11"
+sanic_session = "0.7.3"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+pytest-asyncio = "^0.10.0"
+ipdb = "^0.12.2"
+asynctest = "^0.13.0"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

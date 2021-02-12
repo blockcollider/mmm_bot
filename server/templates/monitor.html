@@ -1,0 +1,101 @@
+
+{% extends 'template.html' %}
+{% block content %}
+   <section class="page-header">
+     <br>
+     <h1>Monitor Program</h1>
+     <br>
+     <br>
+   </section>
+
+    <div class="container">
+        <div id="monitor" class="row">
+          <div class="col">
+            <div class="alert alert-success" role="alert" onclick="performAction('start')">Start</div>
+          </div>
+          <div class="col">
+            <div class="alert alert-danger" role="alert" onclick="performAction('stop')">Stop</div>
+          </div>
+        </div>
+
+        <br>
+        <br>
+        <br>
+
+        <div id="monitor-status" class="container">
+            <div class="row">
+              <div id='heartbeat-info' class="alert alert-primary" role="alert"></div>
+            </div>
+            <br>
+            <div class="row">
+              <div id='heartbeat-failure' class="alert alert-warning" role="alert">Bot Has Not Performed Heartbeat Since: , Ago</div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    <script>
+        function performAction(action) {
+            $.ajax({
+                type: 'POST',
+                url: '/bot_action',
+                data: JSON.stringify({action: action}),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (data) {
+                    console.log('Bot action', action, 'Response', data)
+                    if (action == 'start') {
+                        alert(`MMM Bot is running with docker container: ${data['container_id']}`);
+                    } else {
+                        alert(`MMM Bot is stopped`);
+                    }
+                },
+                failure: function(errMsg) {
+                    alert(errMsg);
+                }
+            });
+        }
+
+        function checkHeartbeat() {
+            $.ajax({
+                type: 'GET',
+                url: '/bot_heartbeat',
+                success: function(data) {
+                    console.log('Bot heartbeat data', data)
+                    const utc = data['heartbeat_at_utc']
+                    const health = data['health']
+                    const reason = data['reason']
+                    const error = data['error']
+
+
+                    $('#heartbeat-info').text(`Last Heartbeat At: ${utc}`);
+
+                    if (health) {
+                        $('#heartbeat-failure').hide()
+                    } else {
+                        let msg = `Failed due to: ${reason}`
+                        if (!utc) {
+                            msg = `No heartbeat info, due to: ${reason}`
+                        }
+                        $('#heartbeat-failure').text(msg);
+                        $('#heartbeat-failure').show()
+
+                    }
+                },
+                failure: function(errMsg) {
+                }
+            });
+
+        }
+      $(document).ready(function() {
+           checkHeartbeat()
+            setInterval(function() {
+                checkHeartbeat()
+            }, 10*1000)
+
+      })
+
+    </script>
+{% endblock %}

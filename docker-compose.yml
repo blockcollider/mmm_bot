@@ -1,0 +1,43 @@
+version: '3'
+services:
+  mmm_bot: # dont' change it
+    build: .
+    # image: blockcollider/mmm_bot:latest
+    command: /src/bin/start_mmm_bot.sh
+    restart: always
+    environment:
+        MMBC_CONFIG_FILE: "/tmp/config/cross_market.yaml"
+        CONFIG_DIR: ${CONFIG_DIR}
+        MMBC_LOGLEVEL: 'info'
+        REGISTER_TIMEOUT: ${REGISTER_TIMEOUT}
+        REGISTER_CHECK_CONFIG: ${REGISTER_CHECK_CONFIG}
+        HEARTBEAT_FILE: ${HEARTBEAT_FILE}
+    volumes:
+        - config-data:${CONFIG_DIR}:rw
+        - ${DB_DIR}:/src/db:rw
+        - ${LOG_DIR}:/src/logs:rw
+        - ${HEARTBEAT_FILE_DIR}:${HEARTBEAT_FILE_DIR}:rw
+    container_name: mmm_bot_container # don't change it
+
+  webserver: # dont' change it
+    build: .
+    # image: blockcollider/mmm_bot:latest
+    ports:
+        - ${WEB_PORT}:${WEB_PORT}
+    command: /src/bin/start_webserver.sh
+    restart: always
+    environment:
+        PORT: ${WEB_PORT}
+        CONFIG_DIR: ${CONFIG_DIR}
+        APP_ENV: ${APP_ENV}
+        HEARTBEAT_FILE: ${HEARTBEAT_FILE}
+    volumes:
+        - ${DB_DIR}:/src/db:rw
+        - ${LOG_DIR}:/src/logs:rw
+        - ${HEARTBEAT_FILE_DIR}:${HEARTBEAT_FILE_DIR}:rw
+        - config-data:${CONFIG_DIR}:rw
+        - /var/run/docker.sock:/var/run/docker.sock
+    container_name: mmm_webserver_container # don't change it
+
+volumes:
+  config-data:

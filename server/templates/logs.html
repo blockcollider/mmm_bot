@@ -1,0 +1,26 @@
+{% extends 'template.html' %}
+{% block content %}
+<section class="page-header">
+  <br>
+  <h1>Logs</h1>
+  <br>
+</section>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th >MMM Bot Boot At </th>
+      <th >Log Filename</th>
+      <th >View Log</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for timestamp, log_name, url in logs %}
+       <tr style="cursor:pointer">
+         <td>{{ timestamp }}</td>
+         <td>{{ log_name }}</td>
+         <td><a href="/logs/{{url}}" target='_blank'> View Log </a> </td>
+       </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

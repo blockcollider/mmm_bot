@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "bc-sdk": "blockcollider/bcjs#v0.0.36",
+    "minimist": "^1.2.0"
+  }
+}

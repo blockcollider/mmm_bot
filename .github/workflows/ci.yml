@@ -1,0 +1,38 @@
+name: CI
+on: push
+
+jobs:
+  pytest:
+    name: pytest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1 # was master
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+      - run: npm install -g yarn
+      - name: Install JS dependencies
+        run: |
+          cd mm_bot/exchange/maker
+          yarn
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.7'
+      - uses: dschep/install-poetry-action@v1.3
+        env:
+          # poetry need to add $HOME/.poetry/bin to $PATH
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+        with:
+          version: 1.0.0
+      - name: Install python dependencies
+        run: poetry install
+      - name: Run pytest
+        run: poetry run python -m pytest # --cov=src --cov-branch --cov-fail-under=100 tests/
+      - name: Notify TG if build failed
+        if: failure()
+        # run: 'echo :x: ${{ github.repository }} build failed on "${{ github.event.head_commit.message }}" - ${{ github.actor}} please fix your commit'
+        uses: appleboy/telegram-action@0.0.7
+        with:
+          to: ${{ secrets.BC_CORE_CHAT_ID }}
+          token: ${{ secrets.BC_DEV_BOT_TOKEN }}
+          message: ':x: ${{ github.repository }} build failed on "${{ github.event.head_commit.message }}" - ${{ github.actor}} please fix your commit'

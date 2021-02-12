@@ -1,0 +1,25 @@
+{% extends 'template.html' %}
+{% block content %}
+      <form action="/login" method="POST">
+        <div class="card">
+          <div class="card-header">
+            <a style="text-decoration:none" data-toggle="collapse" href="#strategy-params" aria-expanded="true" aria-controls="strategy-params" id="heading-example" class="d-block">
+              Login Token
+            </a>
+          </div>
+          <div id="strategy-params" class="collapse show" aria-labelledby="heading-example">
+
+            <div class="card-body">
+              <div class="form-row">
+                <div class="form-group col-md-12">
+                  <input description="auth token" type="text" class="form-control" id="auth_token" name='token' required>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!-- end of strategy -->
+        <button type="submit" class="btn btn-primary">Login</button>
+      </form>
+{% endblock %}

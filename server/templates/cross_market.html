@@ -1,0 +1,224 @@
+{% extends 'template.html' %}
+{% block content %}
+  <section class="page-header">
+    <br>
+    <h1>Cross Market Strategy</h1>
+    <p class="project-tagline">Config parameters to run the MMM bot</p>
+    <br>
+  </section>
+
+  <form action="/save_config" method="POST">
+    <div class="card">
+      <input type="hidden" class="form-control" id="strategy_name" name="strategy_name" value="cross_market" required>
+      <div class="card-header">
+        <a style="text-decoration:none" data-toggle="collapse" href="#strategy-params" aria-expanded="true" aria-controls="strategy-params" id="heading-example" class="d-block">
+          <i class="fa fa-chevron-down pull-right"></i> Strategy Parameters
+        </a>
+      </div>
+      <div id="strategy-params" class="collapse show" aria-labelledby="heading-example">
+
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group col-md-2" title="When True, the bot will not call exchanges to place orders." >
+              <i class="fa fa-info-circle fa-lg"></i>
+              <label for="dry_run">Dry Run Mode</label>
+              <select class="custom-select" name="dry_run" id="dry_run">
+                <option value="True">True</option>
+                <option value="False" selected>False</option>
+              </select>
+            </div>
+            <div class="form-group col-md-2" title="Total number of orders the bot is allowed to have open at any time." >
+              <i class="fa fa-info-circle fa-lg"></i>
+              <label for="max_open_orders">Max Open Orders</label>
+              <input type="number" step="any" class="form-control" id="max_open_orders" name="max_open_orders" value="{{params['max_open_orders']}}" required>
+            </div>
+            <div class="form-group col-md-2" title="The threshold for profit that the bot will use before taking orders." >
+              <i class="fa fa-info-circle fa-lg"></i>
+              <label for="min_profitability_rate">Min Profit Rate</label>
+              <input type="number" step="any" class="form-control" id="min_profitability_rate" name="min_profitability_rate"  value="{{params['min_profitability_rate']}}" required>
+            </div>
+            <div class="form-group col-md-6" title="The maximum amount that the bot is allowed to place in each order." >
+              <i class="fa fa-info-circle fa-lg"></i>
+              <label for="max_qty_per_order">Max Amount Per Order (base currency) </label>
+              <input description="per base currency" type="number" step="any" class="form-control" id="max_qty_per_order" name='max_qty_per_order' value="{{params['max_qty_per_order']}}" required>
+            </div>
+          </div>
+          <!-- row 1 -->
+          <div class="form-row">
+            <div class="form-group col-md-2" title="Allows the bot to cancel orders if they are not profitable or if no one takes the orders." >
+              <i class="fa fa-info-circle fa-lg"></i>
+              <label for="dry_run">Should Cancel Orders</label>
+              <select class="custom-select" name="should_cancel_order" id="should_cancel_order">
+                <option value="True">True</option>
+                <option value="False" selected>False</option>
+              </select>
+            </div>
+            <div class="form-group col-md-4" title="The bot will cancel the order if this threshold is not met." >
+              <i class="fa fa-info-circle fa-lg"></i>
+              <label for="cancel_order_threshold">Cancel Order Profit Rate Threshold</label>
+              <input type="number" step="any" class="form-control" id="cancel_order_threshold" name="cancel_order_threshold"  value="{{params['cancel_order_threshold']}}" required>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- end of strategy -->
+
+    <div class="card">
+      <div class="card-header">
+        <a style="text-decoration:none" data-toggle="collapse" href="#exchange-info" aria-expanded="true" aria-controls="exchange-info" id="heading-example" class="d-block">
+          <i class="fa fa-chevron-down pull-right"></i> Exchange Information
+        </a>
+      </div>
+      <div id="exchange-info" class="collapse show" aria-labelledby="heading-example">
+        <div class="card-body">
+          <div class="card-header"> Source Exchange (Binance) </div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group col-md-2" title="The name of the exchange where you will be searching for orders to pair with orders on the Interchange." >
+                <i class="fa fa-info-circle fa-lg"></i>
+                <label for="exchange_source_name">Exchange Name</label>
+                <input type="text" class="form-control" value="Binance" name="exchange_source_name" id="exchange_source_name" disabled>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="exchange_source_api_key">
+                  <i id='exchange_source_api_key_status' class="fa fa-times" style="color: red" aria-hidden="true"></i>
+                  API Key
+                </label>
+                <input type="text" class="form-control" placeholder="fillme"  value="{{params['exchange_source_api_key']}}"  name="exchange_source_api_key" id="exchange_source_api_key"  required>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="exchange_source_api_secret">
+                  <i id='exchange_source_api_secret_status' class="fa fa-times" style="color: red" aria-hidden="true"></i>
+                  API Secret
+                </label>
+                <input type="text" class="form-control" placeholder="fillme"  value="{{params['exchange_source_api_secret']}}" name="exchange_source_api_secret" id="exchange_source_api_secret"  required>
+              </div>
+            </div>
+            <div>
+              <b>NOTE</b>: You have to enable these: <code>Can Read</code>, <code>Enable Spot & Margin Trading</code>, and <code>Enable Withdrawals</code> of your API key
+              and run the bot in your <b>whitelisted IPs</b>
+            </div>
+            <button type="button" class="btn btn-info" onclick="validateAPIKeys()" style="margin-bottom: 10px">Validate API Keys</button>
+          </div>
+        </div>
+
+
+        <div class="card-body">
+          <div class="card-header">Destination Exchange (Overline Interchange)</div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group col-md-2">
+                <label for="exchange_destination_name">Exchange Name</label>
+                <input type="text" class="form-control" value="Overline Interchange" name="exchange_destination_name" id="exchange_destination_name" disabled>
+              </div>
+              <div class="form-group col-md-5" title="Your OL public key, found in your BSEC wallet." >
+                <i class="fa fa-info-circle fa-lg"></i>
+                <label for="exchange_destination_nrg_public_key">Overline (OL) Wallet Public Key</label>
+                <input type="text" class="form-control" placeholder="fillme" value="{{params['exchange_destination_nrg_public_key']}}" name="exchange_destination_nrg_public_key" id="exchange_destination_nrg_public_key"  required>
+              </div>
+              <div class="form-group col-md-5" title="Your OL private key, also found in your BSEC wallet." >
+                <i class="fa fa-info-circle fa-lg"></i>
+                <label for="exchange_destination_nrg_private_key">Overline (OL) Wallet Private Key</label>
+                <input type="text" class="form-control" placeholder="fillme" value="{{params['exchange_destination_nrg_private_key']}}" name="exchange_destination_nrg_private_key" id="exchange_destination_nrg_private_key"  required>
+              </div>
+
+              <div class="form-group col-md-10">
+                <label for="exchange_destination_miner_address"><i id='exchange_destination_miner_address_status' class="fa fa-times" style="color: red" aria-hidden="true"></i> Overline RPC Address (active address where your txs are submitted) </label>
+                <div class="form-row">
+                  <div class="form-group col-md-8">
+                    <input type="text" class="form-control" placeholder="fillme"  value="{{params['exchange_destination_miner_address']}}" name="exchange_destination_miner_address" id="exchange_destination_miner_address" required >
+                  </div>
+                    <div class="form-group col-md-2">
+                      <input type="text" class="form-control" placeholder="fillme"  value="{{params['exchange_destination_miner_scookie']}}" name="exchange_destination_miner_scookie" id="exchange_destination_miner_scookie">
+                    </div>
+                </div>
+              </div>
+
+            </div>
+            <div>
+              <pre id='balance-pre'>
+              </pre>
+            </div>
+            <button type="button" class="btn btn-info" onclick="validateBcParams()" style="margin-bottom: 10px">Validate RPC Address</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- end of exchange -->
+
+    <div class="card">
+      <div class="card-header">
+        <a style="text-decoration:none" data-toggle="collapse" href="#wallet" aria-expanded="true" aria-controls="wallet" id="heading-example" class="d-block">
+          <i class="fa fa-chevron-down pull-right"></i> Wallets
+        </a>
+      </div>
+      <div id="wallet" class="collapse show" aria-labelledby="heading-example">
+
+        <div class="card-body">
+          <button type="button" class="btn btn-info" onclick="getWallets()" style="margin-bottom: 10px">Auto-Populate from Binance</button>
+
+          <div class="card-header"> Counter Currency (For ETH/BTC pair, ETH=base, BTC=counter) </div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group col-md-2">
+                <label for="wallet_counter_currency_name">Coin Name</label>
+                <select class="custom-select" onchange="clearInputWithId('wallet_counter_currency_wallet', 'counter')" name="wallet_counter_currency_name" id="wallet_counter_currency_name">
+                  <option value="BTC" selected>BTC</option>
+                  <option value="ETH">ETH</option>
+                  <option value="USDT">USDT</option>
+                </select>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="wallet_counter_currency_wallet">Wallet</label>
+                <input type="text" class="form-control" placeholder="fillme"  value="{{params['wallet_counter_currency_wallet']}}" name="wallet_counter_currency_wallet" id="wallet_counter_currency_wallet" required>
+              </div>
+              <div class="form-group col-md-6" style="display: none">
+                <label for="wallet_counter_currency_private_key">Private Key</label>
+                <input type="text" class="form-control" placeholder="fillme"  value="{{params['wallet_counter_currency_private_key']}}"  name="wallet_counter_currency_private_key" id="wallet_counter_currency_private_key">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="card-header"> Base Currency (For ETH/BTC pair, ETH=base, BTC=counter) </div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group col-md-2" title="Only ETH/BTC pair supported." >
+                <i class="fa fa-info-circle fa-lg"></i>
+                <label for="wallet_base_currency_name">Coin Name</label>
+                <select class="custom-select" name="wallet_base_currency_name" onchange="clearInputWithId('wallet_base_currency_wallet', 'base')" id="wallet_base_currency_name">
+                  <option value="BTC">BTC</option>
+                  <option value="ETH" selected>ETH</option>
+                  <option value="LSK">LSK</option>
+                  <option value="NEO">NEO</option>
+                  <option value="WAV">WAV</option>
+                  <option value="DAI">DAI</option>
+                </select>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="wallet_base_currency_wallet">Wallet</label>
+                <input type="text" class="form-control" placeholder="fillme" value="{{params['wallet_base_currency_wallet']}}" name="wallet_base_currency_wallet" id="wallet_base_currency_wallet" required>
+              </div>
+              <div class="form-group col-md-6" style="display: none">
+                <label for="wallet_base_currency_private_key">Private Key</label>
+                <input type="text" class="form-control" placeholder="fillme"  value="{{params['wallet_base_currency_private_key']}}"  name="wallet_base_currency_private_key" id="wallet_base_currency_private_key" >
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- end of wallet -->
+    <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+{% endblock %}
+
+
+{% block script %}
+  <script src="/static/cross_market.js"></script>
+{% endblock %}

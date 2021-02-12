@@ -1,0 +1,30 @@
+mmbc:
+    name: "cross_market"
+    dry_run: "True" # change it to "False" when you don't want dry run
+
+    max_open_orders: "4" # default
+    min_profitability_rate: "0.001"
+    max_qty_per_order: "0.007" # in terms of base
+    cancel_order_threshold: "0.00000001" # a very small number to indicate no cancel
+
+    wallet: # e.g. I want to trade ETH/BTC --> Base is ETH and counter is BTC
+        base_currency:
+            name: "ETH"
+            wallet: "fillme"
+            private_key: "fillme"
+        counter_currency:
+            name: "BTC"
+            wallet: "fillme"
+            private_key: "fillme"
+
+    exchange:
+        source:
+            name: "binance" # dont change it
+            api_key: "fillme"
+            api_secret: "fillme"
+        destination:
+            name: "borderless" # dont change it
+            miner_address: "fillme"
+            miner_scookie: "fillme"
+            nrg_public_key: "fillme"
+            nrg_private_key: "fillme"
