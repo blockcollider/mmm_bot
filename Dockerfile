@@ -6,8 +6,7 @@ RUN apt-get update && apt-get install -y \
   node-pre-gyp \
   build-essential \
   git \
-  dumb-init \
-  docker.io
+  dumb-init
 
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
 && apt-get install -y nodejs
