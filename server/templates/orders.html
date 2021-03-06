@@ -1,9 +1,43 @@
 {% extends 'template.html' %}
 {% block content %}
-<section class="page-header">
-  <br>
-  <h1>Orders</h1>
-  <br>
+<section class="page-header bloomred">
+  <div class="row">
+    <div class="col-sm">
+      <!-- <div class="" style="height: 100%"> -->
+      <p
+        class="template-heading bloomorange"
+        style="
+          margin: 0;
+          padding-bottom: 5px;
+          padding-top: 5px;
+          padding-left: 1.25rem;
+          height: 100%;
+          width: 350px;
+        "
+      >
+        ORDERS
+      </p>
+      <!-- </div> -->
+    </div>
+    <div class="col-sm">
+      <div class="project-tagline template-tagline">
+        <p
+          class="template-tagline"
+          style="
+            margin: 0;
+            padding-bottom: 5px;
+            padding-top: 5px;
+            padding-right: 1.25rem;
+            text-align: end;
+          "
+        >
+          Multi-Market Maker Order Monitoring
+        </p>
+      </div>
+    </div>
+  </div>
+  <!-- <h1 class="template-heading">Cross Market Strategy</h1>
+    <p class="project-tagline">Config parameters to run the MMM bot</p> -->
 </section>
 {% for currency, maker_taker_order_pairs in maker_taker_order_pairs_by_currency.items() %}
   <div class="card">
@@ -13,14 +47,14 @@
       </a>
     </div>
     <div id="collapse-order-{{currency | replace('/', '-')}}" class="collapse show" aria-labelledby="heading-example">
-      <div class="card-body table-responsive">
-        <table class="table table-hover">
+      <div class="card-body table-responsive" class="order">
+        <table class="table">
           <thead>
-            <tr>
-              <th colspan="5" style="border-left: 2px solid #dee2e6; border-right: 2px solid #dee2e6;" >Maker Orders</th>
-              <th colspan="6" style="border-right: 2px solid #dee2e6;" >Taker Orders</th>
+            <tr class='table-text'>
+              <th colspan="5" style="border-left: 2px solid #dee2e6; border-right: 2px solid #dee2e6;"  class='order-table-text' >Maker Orders</th>
+              <th colspan="6" style="border-right: 2px solid #dee2e6;" class='order-table-text' >Taker Orders</th>
             </tr>
-            <tr>
+            <tr class='table-text'>
               <th  style="border-left: 2px solid #dee2e6;" >CreatedAt</th>
               <th>Type</th>
               <th>Status</th>
@@ -37,7 +71,7 @@
           </thead>
           <tbody>
             {% for maker_taker_order_pair in maker_taker_order_pairs %}
-            <tr id="maker-{{maker_taker_order_pair['maker']['id']}}" style="cursor:pointer" data-toggle="modal" data-target="#orderDetailModal" data-content='{{maker_taker_order_pair | tojson}}'>
+            <tr id="maker-{{maker_taker_order_pair['maker']['id']}}" style="cursor:pointer" class='table-text' data-toggle="modal" data-target="#orderDetailModal" data-content='{{maker_taker_order_pair | tojson}}'>
               <td  style="border-left: 2px solid #dee2e6;" >{{ maker_taker_order_pair['maker']['created_at'] }}</td>
               <td>{{ maker_taker_order_pair['maker']['order_type'] }}</td>
               <td>{{ maker_taker_order_pair['maker']['status'] }}</td>

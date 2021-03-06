@@ -1,101 +1,199 @@
-
-{% extends 'template.html' %}
-{% block content %}
-   <section class="page-header">
-     <br>
-     <h1>Monitor Program</h1>
-     <br>
-     <br>
-   </section>
-
-    <div class="container">
-        <div id="monitor" class="row">
-          <div class="col">
-            <div class="alert alert-success" role="alert" onclick="performAction('start')">Start</div>
-          </div>
-          <div class="col">
-            <div class="alert alert-danger" role="alert" onclick="performAction('stop')">Stop</div>
-          </div>
-        </div>
-
-        <br>
-        <br>
-        <br>
-
-        <div id="monitor-status" class="container">
-            <div class="row">
-              <div id='heartbeat-info' class="alert alert-primary" role="alert"></div>
-            </div>
-            <br>
-            <div class="row">
-              <div id='heartbeat-failure' class="alert alert-warning" role="alert">Bot Has Not Performed Heartbeat Since: , Ago</div>
-            </div>
-        </div>
+{% extends 'template.html' %} {% block content %}
+<section class="page-header bloomred">
+  <div class="row">
+    <div class="col-sm">
+      <!-- <div class="" style="height: 100%"> -->
+      <p
+        class="template-heading bloomorange"
+        style="
+          margin: 0;
+          padding-bottom: 5px;
+          padding-top: 5px;
+          padding-left: 1.25rem;
+          height: 100%;
+          width: 350px;
+        "
+      >
+        MONITOR PROGRAM
+      </p>
+      <!-- </div> -->
     </div>
+    <div class="col-sm">
+      <div class="project-tagline template-tagline">
+        <p
+          class="template-tagline"
+          style="
+            margin: 0;
+            padding-bottom: 5px;
+            padding-top: 5px;
+            padding-right: 1.25rem;
+            text-align: end;
+          "
+        >
+          Monitor Cross-Market Bot Operation
+        </p>
+      </div>
+    </div>
+  </div>
+  <!-- <h1 class="template-heading">Cross Market Strategy</h1>
+    <p class="project-tagline">Config parameters to run the MMM bot</p> -->
+</section>
 
-{% endblock %}
+<!-- <div class="container"> -->
+<div class="card" style="margin-top: 1.5rem">
+  <div class="card-header bloomgray" style="margin-bottom: 1.5rem">
+    <a
+      style="text-decoration: none"
+      data-toggle="collapse"
+      href="#operation-controls"
+      aria-expanded="true"
+      aria-controls="operation-controls"
+      id="heading-example"
+      class="d-block card-header-text"
+    >
+      <i class="fa fa-chevron-down pull-right" style="color: white"></i>
+      Operation Controls
+    </a>
+  </div>
+  <div
+    id="operation-controls"
+    class="collapse show"
+    aria-labelledby="heading-example"
+  >
+    <div id="monitor" class="row">
+      <!-- <div class="col"> -->
+      <div
+        role="alert"
+        onclick="performAction('start')"
+        class="btn btn-info"
+        style="
+          margin-top: 0.5rem;
+          background-image: linear-gradient(#61e482, #04ae2c);
+          border-radius: 0px;
+          border: none;
+          color: black;
+          width: 250px;
+          margin-right: 1.5rem;
+          margin-left: 1.5rem;
+        "
+      >
+        Start
+      </div>
+      <!-- </div> -->
+      <!-- <div class="col"> -->
+      <div
+        class="btn btn-info"
+        style="
+          margin-top: 0.5rem;
+          background-image: linear-gradient(#f7766e, #d62110);
+          color: black;
+          border-radius: 0px;
+          border: none;
+          width: 250px;
+        "
+        role="alert"
+        onclick="performAction('stop')"
+      >
+        Stop
+      </div>
+    </div>
+  </div>
+  <!-- </div> -->
+</div>
 
-{% block script %}
-    <script>
-        function performAction(action) {
-            $.ajax({
-                type: 'POST',
-                url: '/bot_action',
-                data: JSON.stringify({action: action}),
-                contentType: 'application/json; charset=utf-8',
-                dataType: 'json',
-                success: function (data) {
-                    console.log('Bot action', action, 'Response', data)
-                    if (action == 'start') {
-                        alert(`MMM Bot is running with docker container: ${data['container_id']}`);
-                    } else {
-                        alert(`MMM Bot is stopped`);
-                    }
-                },
-                failure: function(errMsg) {
-                    alert(errMsg);
-                }
-            });
+<div id="monitor-status" class="card" style="margin-top: 1.5rem">
+  <div class="card-header bloomgray" style="margin-bottom: 1.5rem">
+    <a
+      style="text-decoration: none"
+      data-toggle="collapse"
+      href="#bot-monitor"
+      aria-expanded="true"
+      aria-controls="bot-monitor"
+      id="heading-example"
+      class="d-block card-header-text"
+    >
+      <i class="fa fa-chevron-down pull-right" style="color: white"></i>
+      Bot Monitor
+    </a>
+  </div>
+  <div id="bot-monitor" class="collapse show" aria-labelledby="heading-example">
+    <div class="row" style="margin-left: 1.25rem">
+      <div style="margin-right: 1.25rem">
+        <label class="label-white" style="margin-bottom: 1.25rem"
+          >Heartbeat Status:</label
+        >
+        <div id="heartbeat-info" role="alert" class="monitor-box"></div>
+      </div>
+      <div>
+        <label class="label-white" style="margin-bottom: 1.25rem"
+          >Heartbeat Information:</label
+        >
+        <div id="heartbeat-failure" class="monitor-box" role="alert">
+          Bot Has Not Performed Heartbeat Since: , Ago
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- </div> -->
+
+{% endblock %} {% block script %}
+<script>
+  function performAction(action) {
+    $.ajax({
+      type: "POST",
+      url: "/bot_action",
+      data: JSON.stringify({ action: action }),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function (data) {
+        console.log("Bot action", action, "Response", data);
+        if (action == "start") {
+          alert(
+            `MMM Bot is running with docker container: ${data["container_id"]}`
+          );
+        } else {
+          alert(`MMM Bot is stopped`);
         }
+      },
+      failure: function (errMsg) {
+        alert(errMsg);
+      },
+    });
+  }
 
-        function checkHeartbeat() {
-            $.ajax({
-                type: 'GET',
-                url: '/bot_heartbeat',
-                success: function(data) {
-                    console.log('Bot heartbeat data', data)
-                    const utc = data['heartbeat_at_utc']
-                    const health = data['health']
-                    const reason = data['reason']
-                    const error = data['error']
+  function checkHeartbeat() {
+    $.ajax({
+      type: "GET",
+      url: "/bot_heartbeat",
+      success: function (data) {
+        console.log("Bot heartbeat data", data);
+        const utc = data["heartbeat_at_utc"];
+        const health = data["health"];
+        const reason = data["reason"];
+        const error = data["error"];
 
+        $("#heartbeat-info").text(`Last Heartbeat At: ${utc}`);
 
-                    $('#heartbeat-info').text(`Last Heartbeat At: ${utc}`);
-
-                    if (health) {
-                        $('#heartbeat-failure').hide()
-                    } else {
-                        let msg = `Failed due to: ${reason}`
-                        if (!utc) {
-                            msg = `No heartbeat info, due to: ${reason}`
-                        }
-                        $('#heartbeat-failure').text(msg);
-                        $('#heartbeat-failure').show()
-
-                    }
-                },
-                failure: function(errMsg) {
-                }
-            });
-
+        if (health) {
+          $("#heartbeat-failure").hide();
+        } else {
+          let msg = `Failed due to: ${reason}`;
+          if (!utc) {
+            msg = `No heartbeat info, due to: ${reason}`;
+          }
+          $("#heartbeat-failure").text(msg);
+          $("#heartbeat-failure").show();
         }
-      $(document).ready(function() {
-           checkHeartbeat()
-            setInterval(function() {
-                checkHeartbeat()
-            }, 10*1000)
-
-      })
-
-    </script>
+      },
+      failure: function (errMsg) {},
+    });
+  }
+  $(document).ready(function () {
+    checkHeartbeat();
+    setInterval(function () {
+      checkHeartbeat();
+    }, 10 * 1000);
+  });
+</script>
 {% endblock %}

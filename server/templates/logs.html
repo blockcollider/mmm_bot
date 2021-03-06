@@ -1,26 +1,65 @@
-{% extends 'template.html' %}
-{% block content %}
-<section class="page-header">
-  <br>
-  <h1>Logs</h1>
-  <br>
+{% extends 'template.html' %} {% block content %}
+<section class="page-header bloomred">
+  <div class="row">
+    <div class="col-sm">
+      <!-- <div class="" style="height: 100%"> -->
+      <p
+        class="template-heading bloomorange"
+        style="
+          margin: 0;
+          padding-bottom: 5px;
+          padding-top: 5px;
+          padding-left: 1.25rem;
+          height: 100%;
+          width: 350px;
+        "
+      >
+        LOGS
+      </p>
+      <!-- </div> -->
+    </div>
+    <div class="col-sm">
+      <div class="project-tagline template-tagline">
+        <p
+          class="template-tagline"
+          style="
+            margin: 0;
+            padding-bottom: 5px;
+            padding-top: 5px;
+            padding-right: 1.25rem;
+            text-align: end;
+          "
+        >
+          Multi-Market Maker Log Monitoring
+        </p>
+      </div>
+    </div>
+  </div>
+  <!-- <h1 class="template-heading">Cross Market Strategy</h1>
+    <p class="project-tagline">Config parameters to run the MMM bot</p> -->
 </section>
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th >MMM Bot Boot At </th>
-      <th >Log Filename</th>
-      <th >View Log</th>
+<table class="table" style="margin-top: 2.5rem">
+  <thead
+    class="bloomgray card-header-text"
+    style="padding-left: 1.25rem; padding-right: 1.25rem; font-weight: normal"
+  >
+    <tr
+      class="card-header-text bloomgray"
+      style="padding-right: 1.25rem; padding-left: 1.25rem"
+    >
+      <th>MMM Bot Boot At</th>
+      <th>Log Filename</th>
+      <th>View Log</th>
     </tr>
   </thead>
-  <tbody>
-  {% for timestamp, log_name, url in logs %}
-       <tr style="cursor:pointer">
-         <td>{{ timestamp }}</td>
-         <td>{{ log_name }}</td>
-         <td><a href="/logs/{{url}}" target='_blank'> View Log </a> </td>
-       </tr>
-  {% endfor %}
+  <tbody style="padding-right: 1.25rem; padding-left: 1.25rem">
+    {% for timestamp, log_name, url in logs %}
+    <tr class="table-text" style="font-weight: 200">
+      <td>{{ timestamp }}</td>
+      <td>{{ log_name }}</td>
+      <td><a href="/logs/{{url}}" target="_blank"> View Log </a></td>
+    </tr>
+    {% endfor %}
   </tbody>
 </table>
 {% endblock %}

@@ -35,6 +35,10 @@ then
 elif [[ "$action" == "stop" ]]
 then
     docker-compose down
+elif [[ "$action" == "restart" ]]
+then
+    ./mmm_bot.sh stop
+    ./mmm_bot.sh start
 else
     echo 'Usage: '
     echo '   ./mmm_bot.sh start '
