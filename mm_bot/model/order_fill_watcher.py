@@ -78,14 +78,6 @@ class OrderFillWatcher():
                         self._logger.info("Maker order (id: %s) is in expired status", maker_order.id)
                         continue
 
-                    is_in_settlement_window = await self.borderless_exchange.is_in_settlement_window(maker_order)
-                    if not is_in_settlement_window:
-                        self._logger.info("Order is not in the settle_window anymore so i will not send assets. Order id: %s", maker_order.id)
-                        maker_order.status = Status.EXPIRED
-                        self._logger.info("Mark order %s as %s", maker_order.id, maker_order.status)
-                        await self._repository.update_order(maker_order)
-                        continue
-
                     order_body = maker_order.order_body
                     taker_order_body = maker_order.taker_order_body
 
@@ -101,7 +93,6 @@ class OrderFillWatcher():
                     maker_order.status = Status.SETTLED
                     self._logger.info("Mark order %s as %s", maker_order.id, maker_order.status)
                     await self._repository.update_order(maker_order)
-
         # borderless
         else:
             await self.unlock_borderless_orders()
@@ -121,6 +112,14 @@ class OrderFillWatcher():
 
             order_statuses = await self.exchange.get_order_status(open_orders_from_db)
             for order, status, taker_info in order_statuses:
+                is_in_settlement_window = await self.borderless_exchange.is_in_settlement_window(order)
+                if not is_in_settlement_window:
+                    self._logger.info("Order is not in the settle_window anymore so i will not send assets. Order id: %s", order.id)
+                    order.status = Status.EXPIRED
+                    self._logger.info("Mark order %s as %s", order.id, order.status)
+                    await self._repository.update_order(order)
+                    continue
+
                 if order.status == status:
                     continue
 
